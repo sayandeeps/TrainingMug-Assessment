@@ -1,20 +1,48 @@
-import React from 'react'
-import { Input } from "@material-tailwind/react";
+import { ChangeEvent, FormEvent, useState } from 'react';
+import axios from 'axios';
 
+const SearchBar = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
-const Searchbar = () => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.get(
+        `https://jsonplaceholder.typicode.com/posts?userId=1&q=${searchTerm}`
+      );
+      setSearchResults(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   return (
-    <div className="w-72">
-      <Input
-              type="email"
-              placeholder="Email Address"
-              className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
-              labelProps={{
-                  className: "hidden",
-              }}
-              containerProps={{ className: "min-w-[100px]" }} crossOrigin={undefined}      />
+    <div>
+      <form onSubmit={handleSearch}>
+        <input
+          type="text"
+          placeholder="Search by title..."
+          value={searchTerm}
+          onChange={handleInputChange}
+        />
+        <button type="submit">Search</button>
+      </form>
+      <div>
+        {searchResults.map((post: any) => (
+          <div key={post.id}>
+            <h3>{post.title}</h3>
+            <p>{post.body}</p>
+          </div>
+        ))}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Searchbar
+export default SearchBar;

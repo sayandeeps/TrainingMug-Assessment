@@ -1,6 +1,8 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { savedPostsSlice } from "./features/savedPostsSlice";
+import likeDislikeReducer from './features/likeDislikeSlice';
+
 import {persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
@@ -12,6 +14,7 @@ const persistConfig = {
 
   const rootReducer = combineReducers({
     savedPosts: savedPostsSlice.reducer,
+    likeDislike: likeDislikeReducer,
   })
    
   const persistedReducer = persistReducer(persistConfig, rootReducer)
