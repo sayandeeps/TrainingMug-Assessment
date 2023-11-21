@@ -2,7 +2,10 @@
 import Image from 'next/image'
 import React, { useState } from 'react';
 import PhotosPage from './photos/page';
+import SavedPost from './saved/page';
 import PostsPage from './posts/page';
+
+
 
 import Link from 'next/link'
 
@@ -80,6 +83,14 @@ export default function Home() {
                 >
                     Posts
                 </button>
+                <button
+                    className={`flex items-center justify-center h-10 px-4 ml-2 text-sm font-medium  rounded hover:bg-gray-800 ${
+                        selectedTab === 'Saved' ? 'bg-gray-800' : ''
+                    }`}
+                    onClick={() => handleTabChange('Saved')}
+                >
+                    Saved Posts
+                </button>
             </div>
             
             <div className="flex-grow p-6 overflow-auto bg-gray-800">
@@ -88,6 +99,8 @@ export default function Home() {
                     <PhotosPage />
                 ) : selectedTab === 'Posts' ? (
                     <PostsPage />
+                ) : selectedTab === 'Saved' ? (
+                  <SavedPost />
                 ) : null}
                 </div>
             </div>

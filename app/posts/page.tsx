@@ -1,6 +1,10 @@
 "use client";
+import { Provider } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { savePost, unsavePost } from "../../store/features/savedPostsSlice";
 interface Post {
     userId: number;
     id: number;
@@ -11,6 +15,19 @@ const Page = () => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 20;
+
+    const dispatch = useDispatch();
+    const savedPosts = useSelector(
+      (state: RootState) => state.savedPosts.savedPosts
+    );
+  
+    const handleSavePost = (post: Post) => {
+      dispatch(savePost(post));
+    };
+  
+    const handleUnsavePost = (postId: number) => {
+      dispatch(unsavePost(postId));
+    };
 
     useEffect(() => {
     
@@ -34,6 +51,7 @@ const Page = () => {
     };
 
     return (
+        
         <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8 py-6">
                 {currentPosts.map((post) => (
@@ -46,9 +64,21 @@ const Page = () => {
                                 <p className="font-normal text-gray-700 mb-3">{post.body}</p>
                             </div>
                             <div className="mt-auto">
-                                <a className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center" href="#">
-                                    Like
-                                </a>
+                            {savedPosts.some((savedPost) => savedPost.id === post.id) ? (
+            <button
+              className="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
+              onClick={() => handleUnsavePost(post.id)}
+            >
+              Unsave
+            </button>
+          ) : (
+            <button
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
+              onClick={() => handleSavePost(post)}
+            >
+              Save
+            </button>
+          )}
                             </div>
                         </div>
                     </div>
@@ -66,6 +96,7 @@ const Page = () => {
                 ))}
             </div>
         </div>
+        
     );
 };
 
