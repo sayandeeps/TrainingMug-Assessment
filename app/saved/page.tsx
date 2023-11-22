@@ -1,4 +1,6 @@
 // Import necessary dependencies
+"use client";
+
 import { useEffect, useState } from 'react';
 import { RootState } from '../../store/store';
 import { savePost, unsavePost } from "../../store/features/savedPostsSlice";

@@ -1,3 +1,5 @@
+"use client";
+
 import { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 import axios from 'axios';
 
