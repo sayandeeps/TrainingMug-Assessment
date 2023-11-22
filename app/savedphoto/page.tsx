@@ -66,7 +66,7 @@ const SavedPhotoPage = () => {
     <div className="grid grid-cols-1 gap-4 px-4 sm:px-6 lg:px-8 py-6">
     {(searchedPosts.length > 0 && searchTerm !== '' ? searchedPosts : currentPosts).map((post: Post) => (
 
-    <div className="dark:bg-gray-800 dark:text-gray-50">
+    <div className="dark:bg-gray-800 dark:text-gray-50" key={post.id}>
 	<div className="container grid grid-cols-12 mx-auto dark:bg-gray-900">
     <div
   className="bg-no-repeat bg-cover  col-span-full lg:col-span-4"
