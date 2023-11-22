@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import ReactPaginate from 'react-paginate';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { savePost, unsavePost } from '../../store/features/savedPostsSlice';
 import LikeDislikephotoButtons from '../../components/LikeDislikephotoButtons';
+import SearchBar from '../../components/SearchBar';
+import axios from 'axios';
 
 const Page = () => {
+    
+
   const [posts, setPosts] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchedPosts, setSearchedPosts] = useState<any[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
-  const [pageNumber, setPageNumber] = useState(0);
-  const postsPerPage = 20;
+  const [back, setback] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleLikePost = (postId: number) => {
     const updatedLikeCounts = { ...likeCounts };
@@ -17,49 +22,131 @@ const Page = () => {
     setLikeCounts(updatedLikeCounts);
   };
 
-  useEffect(() => {
-    axios
-      .get('https://jsonplaceholder.typicode.com/photos')
-      .then((response) => {
-        setPosts(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching posts:', error);
-      });
-  }, []);
+  console.log('Searched Posts Length:', searchedPosts.length);
+  console.log('searched term', searchTerm);
 
-  const pageCount = Math.ceil(posts.length / postsPerPage);
-  const pagesVisited = pageNumber * postsPerPage;
+  const postsPerPage = 20;
 
-  const displayPosts = (searchedPosts.length > 0 && searchTerm !== '') ? searchedPosts : posts.slice(pagesVisited, pagesVisited + postsPerPage);
+  const dispatch = useDispatch();
+  const savedPosts = useSelector((state: RootState) => state.savedPosts.savedPosts);
 
-  const changePage = ({ selected }: { selected: number }) => {
-    setPageNumber(selected);
+  const handleSavePost = (post: any) => {
+    dispatch(savePost(post));
   };
-  console.log(displayPosts.length)
+
+  const handleUnsavePost = (postId: number) => {
+    dispatch(unsavePost(postId));
+  };
+
+
+  useEffect(() => {
+    axios.get('https://jsonplaceholder.typicode.com/photos')
+        .then((response) => {
+            setPosts(response.data);
+        })
+        .catch((error) => {
+            console.error('Error fetching posts:', error);
+        });
+}, []); 
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+  const maxVisiblePages = 5;
+  const totalPosts = posts.length;
+  const totalPages = Math.ceil(totalPosts / postsPerPage);
+
+  const getVisiblePageNumbers = () => {
+    const midPoint = Math.floor(maxVisiblePages / 2);
+    let startPage = currentPage - midPoint;
+    let endPage = currentPage + midPoint;
+
+    if (startPage <= 0) {
+      startPage = 1;
+      endPage = maxVisiblePages;
+    } else if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = totalPages - maxVisiblePages + 1;
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  };
+
+  const [visiblePageNumbers, setVisiblePageNumbers] = useState<number[]>(getVisiblePageNumbers());
+
+
+
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  useEffect(() => {
+    setVisiblePageNumbers(getVisiblePageNumbers());
+  }, [currentPage]);
+
+
+
 
   return (
     <div>
+        <h1>Search Photos</h1>
+        <div className='flex'>
+        
+        <SearchBar setSearchedPosts={setSearchedPosts} setback={setback} setSearchTerm={setSearchTerm} />
+        
+    </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8 py-6">
-        {displayPosts.map((post: any) => (
-          <a href="#" className="group relative flex h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-80" key={post.albumId}>
-            <img src={`${post.url}`} loading="lazy" alt="Photo by Minh Pham" className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
-            <span className="relative ml-4 mb-3 inline-block text-sm text-white md:ml-5 md:text-lg">{`${post.title}`} <LikeDislikephotoButtons postId={post.id} /></span>
-          </a>
+      {(searchedPosts.length > 0 && searchTerm !='' ? searchedPosts  : currentPosts).map((post: any) => ( 
+
+          <a href="#" className="group relative flex h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-80">
+                <img src={`${post.url}`} loading="lazy" alt="Photo by Minh Pham" className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110"/>
+
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50">
+                </div>
+
+                <span className="relative ml-4 mb-3 inline-block text-sm text-white md:ml-5 md:text-lg">{`${post.title}`} <LikeDislikephotoButtons postId={post.id} /></span>
+            </a>
         ))}
       </div>
-      <ReactPaginate
-        previousLabel={"Previous"}
-        nextLabel={"Next"}
-        pageCount={pageCount}
-        onPageChange={changePage}
-        containerClassName={"paginationBttns"}
-        previousLinkClassName={"previousBttn"}
-        nextLinkClassName={"nextBttn"}
-        disabledClassName={"paginationDisabled"}
-        activeClassName={"paginationActive"}
-      />
+       
+
+      {/* Existing code... */}
+      <div className="flex justify-center mt-4" style={{ display: searchedPosts.length > 0 ? 'none' : 'block' }}>
+        {/* Show visible page numbers */}
+        {visiblePageNumbers.map((pageNumber) => (
+          <button
+            key={pageNumber}
+            className={`mx-1 px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none ${
+              currentPage === pageNumber ? 'bg-gray-400' : ''
+            }`}
+            onClick={() => paginate(pageNumber)}
+          >
+            {pageNumber}
+          </button>
+        ))}
+
+        {/* Show previous button to navigate to previous set of pages */}
+        {currentPage > maxVisiblePages / 2 && (
+          <button
+            className="mx-1 px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none"
+            onClick={() => paginate(currentPage - 1)}
+          >
+            Prev
+          </button>
+        )}
+
+        {/* Show next button to navigate to next set of pages */}
+        {currentPage <= totalPages - maxVisiblePages / 2 && (
+          <button
+            className="mx-1 px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none"
+            onClick={() => paginate(currentPage + 1)}
+          >
+            Next
+          </button>
+        )}
+      </div>
+      
     </div>
   );
 };
