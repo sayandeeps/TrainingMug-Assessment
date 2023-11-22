@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import PhotosPage from './photos/page';
 import SavedPost from './saved/page';
 import PostsPage from './posts/page';
+import NextNProgress from 'nextjs-progressbar';
 
 
 
@@ -22,6 +23,7 @@ export default function Home() {
    <main>
 
     <>
+    <NextNProgress />
         <div className="flex w-screen h-screen text-gray-400 bg-gray-900">
 
         <div className="flex flex-col items-center w-16 pb-4 overflow-auto border-r border-gray-800 text-gray-500">

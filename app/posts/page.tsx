@@ -7,8 +7,17 @@ import SearchBar from '../../components/SearchBar';
 import axios from 'axios';
 
 const Page = () => {
+    
+
   const [posts, setPosts] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchedPosts, setSearchedPosts] = useState<any[]>([]);
+  const [back, setback] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  console.log('Searched Posts Length:', searchedPosts.length);
+  console.log('searched term', searchTerm);
+
   const postsPerPage = 20;
 
   const dispatch = useDispatch();
@@ -41,14 +50,19 @@ const Page = () => {
     setCurrentPage(pageNumber);
   };
 
+
+
+
   return (
     <div>
-        <div>
-      <h1>Search Posts</h1>
-      <SearchBar />
+        <h1>Search Posts</h1>
+        <div className='flex'>
+        
+        <SearchBar setSearchedPosts={setSearchedPosts} setback={setback} setSearchTerm={setSearchTerm} />
+        
     </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8 py-6">
-        {currentPosts.map((post: any) => (
+      {(searchedPosts.length > 0 && searchTerm !='' ? searchedPosts  : currentPosts).map((post: any) => ( 
           <div className="bg-white shadow-md border border-gray-200 rounded-lg max-w-sm mb-5 flex-grow" key={post.id}>
             <div className="p-5 flex flex-col h-full justify-between">
               <div>
@@ -79,7 +93,9 @@ const Page = () => {
           </div>
         ))}
       </div>
-      <div className="flex justify-center mt-4">
+       
+
+      <div className="flex justify-center mt-4" style={{display: searchedPosts.length > 0 ? 'none' : 'block' }}>
         {Array.from({ length: Math.ceil(posts.length / postsPerPage) }, (_, i) => (
           <button
             key={i}
@@ -90,6 +106,7 @@ const Page = () => {
           </button>
         ))}
       </div>
+      
     </div>
   );
 };
