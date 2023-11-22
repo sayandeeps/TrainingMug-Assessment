@@ -1,6 +1,8 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import Providers from "../components/Providers";
+import NextNProgress from 'nextjs-progressbar';
+
 
 import { Inter } from 'next/font/google'
 

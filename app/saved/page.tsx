@@ -3,6 +3,8 @@ import React from 'react';
 import { RootState } from '../../store/store';
 import { savePost, unsavePost } from "../../store/features/savedPostsSlice";
 import { useDispatch, useSelector } from "react-redux";
+import LikeDislikeButtons from '../../components/LikeDislikeButtons';
+
 
 interface Post {
     userId: number;
@@ -51,6 +53,8 @@ const SavedPostsPage = () => {
                 <p className="font-normal text-gray-700 mb-3">{post.body}</p>
             </div>
             <div className="mt-auto">
+            <LikeDislikeButtons postId={post.id} />
+
             {savedPosts.some((savedPost) => savedPost.id === post.id) ? (
             <button
               className="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
