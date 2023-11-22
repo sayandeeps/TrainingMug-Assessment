@@ -3,6 +3,7 @@ import Image from 'next/image'
 import React, { useState } from 'react';
 import PhotosPage from './photos/page';
 import SavedPost from './saved/page';
+import SavedPhoto from './savedphoto/page';
 import PostsPage from './posts/page';
 import NextNProgress from 'nextjs-progressbar';
 
@@ -79,6 +80,14 @@ export default function Home() {
                 </button>
                 <button
                     className={`flex items-center justify-center h-10 px-4 ml-2 text-sm font-medium  rounded hover:bg-gray-800 ${
+                        selectedTab === 'SavedPhoto' ? 'bg-gray-800' : ''
+                    }`}
+                    onClick={() => handleTabChange('SavedPhoto')}
+                >
+                    Saved Photo
+                </button>
+                <button
+                    className={`flex items-center justify-center h-10 px-4 ml-2 text-sm font-medium  rounded hover:bg-gray-800 ${
                         selectedTab === 'Posts' ? 'bg-gray-800' : ''
                     }`}
                     onClick={() => handleTabChange('Posts')}
@@ -93,17 +102,20 @@ export default function Home() {
                 >
                     Saved Posts
                 </button>
+                
             </div>
             
             <div className="flex-grow p-6 overflow-auto bg-gray-800">
                 
                 {selectedTab === 'Photos' ? (
                     <PhotosPage />
-                ) : selectedTab === 'Posts' ? (
+                ) : selectedTab === 'SavedPhoto' ? (
+                    <SavedPhoto />
+                  ): selectedTab === 'Posts' ? (
                     <PostsPage />
                 ) : selectedTab === 'Saved' ? (
                   <SavedPost />
-                ) : null}
+                )  : null}
                 </div>
             </div>
         </div>
