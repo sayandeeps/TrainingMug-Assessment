@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { savePost, unsavePost } from '../../store/features/savedPostsSlice';
 import LikeDislikephotoButtons from '../../components/LikeDislikephotoButtons';
-import SearchBar from '../../components/SearchBar';
+import SearchBarphotos from '../../components/SearchBarphotos';
 import axios from 'axios';
 
 const Page = () => {
@@ -93,7 +93,7 @@ const Page = () => {
         <h1>Search Photos</h1>
         <div className='flex'>
         
-        <SearchBar setSearchedPosts={setSearchedPosts} setback={setback} setSearchTerm={setSearchTerm} />
+        <SearchBarphotos setSearchedPosts={setSearchedPosts} setback={setback} setSearchTerm={setSearchTerm} />
         
     </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8 py-6">
