@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { savePost, unsavePost } from '../../store/features/savedPostsSlice';
+import { savePhoto, unsavePhoto } from '../../store/features/savedPhotoSlice';
 import LikeDislikephotoButtons from '../../components/LikeDislikephotoButtons';
 import SearchBarphotos from '../../components/SearchBarphotos';
 import axios from 'axios';
@@ -28,14 +28,14 @@ const Page = () => {
   const postsPerPage = 20;
 
   const dispatch = useDispatch();
-  const savedPosts = useSelector((state: RootState) => state.savedPosts.savedPosts);
+  const savedPhoto = useSelector((state: RootState) => state.savedPhoto.savedPhoto);
 
-  const handleSavePost = (post: any) => {
-    dispatch(savePost(post));
+  const handleSavePhoto = (post: any) => {
+    dispatch(savePhoto(post));
   };
 
-  const handleUnsavePost = (postId: number) => {
-    dispatch(unsavePost(postId));
+  const handleUnsavePhoto = (postId: number) => {
+    dispatch(unsavePhoto(postId));
   };
 
 
@@ -90,7 +90,9 @@ const Page = () => {
 
   return (
     <div>
-        <h1>Search Photos</h1>
+        <h1>Search Photo
+          
+        </h1>
         <div className='flex'>
         
         <SearchBarphotos setSearchedPosts={setSearchedPosts} setback={setback} setSearchTerm={setSearchTerm} />
@@ -105,7 +107,28 @@ const Page = () => {
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50">
                 </div>
 
-                <span className="relative ml-4 mb-3 inline-block text-sm text-white md:ml-5 md:text-lg">{`${post.title}`} <LikeDislikephotoButtons postId={post.id} /></span>
+                <span className="relative ml-4 mb-3 inline-block text-sm text-white md:ml-5 md:text-lg">{`${post.title}`} 
+                
+                <div className="mt-auto">
+              <LikeDislikephotoButtons postId={post.id} />
+                {savedPhoto.some((savedPost: any) => savedPost.id === post.id) ? (
+                  <button
+                    className="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
+                    onClick={() => handleUnsavePhoto(post.id)}
+                  >
+                    Unsave
+                  </button>
+                ) : (
+                  <button
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
+                    onClick={() => handleSavePhoto(post)}
+                  >
+                    Save
+                  </button>
+                )}
+              </div>
+                
+                </span>
             </a>
         ))}
       </div>
