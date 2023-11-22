@@ -1,9 +1,11 @@
 // Import necessary dependencies
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { RootState } from '../../store/store';
 import { savePost, unsavePost } from "../../store/features/savedPostsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LikeDislikeButtons from '../../components/LikeDislikeButtons';
+import SearchBar from '../../components/SearchBar';
+
 
 
 interface Post {
@@ -14,6 +16,12 @@ interface Post {
 }
 
 const SavedPostsPage = () => {
+  const [searchedPosts, setSearchedPosts] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [back, setback] = useState(false);
+
+
+
   // Access saved posts from Redux store
   const dispatch = useDispatch();
   const savedPosts = useSelector(
@@ -42,8 +50,15 @@ const SavedPostsPage = () => {
     //     {savedPosts.length === 0 && <p>No saved posts yet.</p>}
     //   </div>
     // </div>
+    <div>
+    <h1>Search Posts</h1>
+        <div className='flex'>
+        
+        <SearchBar setSearchedPosts={setSearchedPosts} setback={setback} setSearchTerm={setSearchTerm} />
+        
+    </div>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8 py-6">
-       {savedPosts.map((post) => (
+    {(searchedPosts.length > 0 && searchTerm !== '' ? searchedPosts : savedPosts).map((post: Post) => (
         <div className="bg-white shadow-md border border-gray-200 rounded-lg max-w-sm mb-5 flex-grow" key={post.id}>
         <div className="p-5 flex flex-col h-full justify-between">
             <div>
@@ -78,7 +93,7 @@ const SavedPostsPage = () => {
          {savedPosts.length === 0 && <p>No saved posts yet.</p>}
 
    </div>
-     
+   </div>
 
   );
 };
